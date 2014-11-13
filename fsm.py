@@ -23,9 +23,7 @@ class FuzzyStringMatcher(object):
         the co-domain.
         """
 
-        # Lower case each document
         norm_docs = (FuzzyStringMatcher.__normalize_string(d) for d in documents)
-
         self.vectorizer = TfidfVectorizer()
         self.matrix = self.vectorizer.fit_transform(norm_docs).transpose()
 
@@ -33,14 +31,21 @@ class FuzzyStringMatcher(object):
         return str(self.matrix)
 
     def match1(self, s):
-        """Return the index of the best match for a given input string."""
+        """Match an input string against the co-domain strings.
+
+        Return the index and quality of the best match.  Quality is a number
+        between 0 and 1.
+        """
+
         s = FuzzyStringMatcher.__normalize_string(s)
         ar = self.vectorizer.transform([s])
         dp = ar.dot(self.matrix)
 
         # Argmax only seems to return a correct result with dense matrices
         ddp = dp.todense()
-        return ddp.argmax()
+        max_val = ddp.max()
+        max_index = ddp.argmax()
+        return (max_index, max_val)
 
 if __name__ == '__main__':
     docs = ["AT&T Corp. ", "Texas Instruments Corp", "LSI Corp"]
@@ -50,3 +55,4 @@ if __name__ == '__main__':
     print fsm.match1('Corporation known as lSi!!!')
     print fsm.match1('Texas computer corporation')
     print fsm.match1('att incorporated corp')
+    print fsm.match1('complete garbage that matches nothing!!!')
