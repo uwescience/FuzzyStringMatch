@@ -45,8 +45,9 @@ class FuzzyStringMatcher(object):
 
         # Argmax only seems to return a correct result with dense matrices
         ddp = dp.todense()
-        max_val = ddp.max()
         max_index = ddp.argmax()
+        max_val = ddp[0, max_index]
+
         return (max_index, max_val)
 
 if __name__ == '__main__':
