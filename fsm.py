@@ -8,6 +8,8 @@ class FuzzyStringMatcher(object):
     The matcher is initialized by a list of strings in the output domain (or
     "codomain").  Each string in the input domain is matched using the match1
     function.
+
+    Limitations: no spell checking, no stemming, no alias resolution, etc.
     """
 
     @staticmethod
